@@ -281,7 +281,7 @@ function formaterVariation(pourcentage){
   return `<span class="${classe}">${signe}${pourcentage.toFixed(2)}%</span>`;
 }
 
-async function chargerMarches(){
+async function chargerMarches(data){
   const zone = document.getElementById("zone-marches");
   let ligneBitcoin = "";
   let ligneDcam = "";
@@ -300,19 +300,13 @@ async function chargerMarches(){
     ligneBitcoin = '<div class="stat-ligne"><span class="cle">Bitcoin</span><span class="val erreur">indisponible</span></div>';
   }
 
-  try {
-    const reponseDcam = await fetch("https://query1.finance.yahoo.com/v8/finance/chart/DCAM.PA");
-    const dataDcam = await reponseDcam.json();
-    const meta = dataDcam.chart.result[0].meta;
-    const prix = meta.regularMarketPrice;
-    const cloturePrec = meta.chartPreviousClose || meta.previousClose;
-    const variation = ((prix - cloturePrec) / cloturePrec) * 100;
+  if (data && data.dcam) {
     ligneDcam = `
       <div class="stat-ligne">
         <span class="cle">DCAM (Amundi PEA Monde)</span>
-        <span class="val">${prix.toFixed(2)} € ${formaterVariation(variation)}</span>
+        <span class="val">${data.dcam.prix.toFixed(2)} € ${formaterVariation(data.dcam.variation)}</span>
       </div>`;
-  } catch (e) {
+  } else {
     ligneDcam = '<div class="stat-ligne"><span class="cle">DCAM (Amundi PEA Monde)</span><span class="val erreur">indisponible</span></div>';
   }
 
@@ -329,6 +323,7 @@ async function chargerDonnees(){
     rendreDevoirs(data.devoirs);
     rendreSommeil(data.dashboard || {});
     rendreSport(data.dashboard || {});
+    chargerMarches(data);
 
     const maintenant = new Date();
     document.getElementById("derniere-maj").textContent =
@@ -344,7 +339,6 @@ async function chargerDonnees(){
 
 afficherDate();
 chargerDonnees();
-chargerMarches();
 </script>
 </body>
 </html>
