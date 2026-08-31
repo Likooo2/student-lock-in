@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <style>
   :root{
     --paper:#FAF6EF;
@@ -173,6 +174,12 @@
   <section>
     <h2>Sport</h2>
     <div id="zone-sport" class="chargement">Chargement…</div>
+  </section>
+
+  <section id="section-notifs" style="display:none;">
+    <h2>Notifications</h2>
+    <div id="zone-notifs" class="vide">Active les notifications pour être prévenu des changements importants.</div>
+    <button class="bouton-rafraichir" id="bouton-activer-notifs" style="margin-top:10px;">Activer les notifications</button>
   </section>
 
   <section>
@@ -339,6 +346,41 @@ async function chargerDonnees(){
 
 afficherDate();
 chargerDonnees();
+
+// --- Notifications push (OneSignal) ---
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.init({
+    appId: "5fbe501c-8214-4770-a47a-567b251dfa27",
+    allowLocalhostAsSecureOrigin: true,
+  });
+
+  const estInstalleSurEcranAccueil = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const zoneNotifs = document.getElementById("section-notifs");
+  const boutonActiver = document.getElementById("bouton-activer-notifs");
+  const texteZone = document.getElementById("zone-notifs");
+
+  if (!estInstalleSurEcranAccueil) {
+    // Sur iPhone, les notifs ne marchent que si l'app est installée sur l'écran d'accueil
+    zoneNotifs.style.display = "block";
+    texteZone.textContent = "Installe d'abord ce dashboard sur ton écran d'accueil (Partager → Sur l'écran d'accueil) pour pouvoir activer les notifications.";
+    boutonActiver.style.display = "none";
+    return;
+  }
+
+  const dejaAbonne = await OneSignal.User.PushSubscription.optedIn;
+  if (dejaAbonne) {
+    texteZone.textContent = "Notifications activées ✅";
+    boutonActiver.style.display = "none";
+  } else {
+    zoneNotifs.style.display = "block";
+    boutonActiver.addEventListener("click", async () => {
+      await OneSignal.Notifications.requestPermission();
+      texteZone.textContent = "Notifications activées ✅";
+      boutonActiver.style.display = "none";
+    });
+  }
+});
 </script>
 </body>
 </html>
