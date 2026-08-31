@@ -176,10 +176,10 @@
     <div id="zone-sport" class="chargement">Chargement…</div>
   </section>
 
-  <section id="section-notifs" style="display:none;">
+  <section id="section-notifs">
     <h2>Notifications</h2>
-    <div id="zone-notifs" class="vide">Active les notifications pour être prévenu des changements importants.</div>
-    <button class="bouton-rafraichir" id="bouton-activer-notifs" style="margin-top:10px;">Activer les notifications</button>
+    <div id="zone-notifs" class="chargement">Vérification…</div>
+    <button class="bouton-rafraichir" id="bouton-activer-notifs" style="margin-top:10px; display:none;">Activer les notifications</button>
   </section>
 
   <section>
@@ -348,39 +348,49 @@ afficherDate();
 chargerDonnees();
 
 // --- Notifications push (OneSignal) ---
+const texteZoneNotifs = document.getElementById("zone-notifs");
+const boutonActiverNotifs = document.getElementById("bouton-activer-notifs");
+
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 OneSignalDeferred.push(async function(OneSignal) {
-  await OneSignal.init({
-    appId: "5fbe501c-8214-4770-a47a-567b251dfa27",
-    allowLocalhostAsSecureOrigin: true,
-  });
-
-  const estInstalleSurEcranAccueil = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  const zoneNotifs = document.getElementById("section-notifs");
-  const boutonActiver = document.getElementById("bouton-activer-notifs");
-  const texteZone = document.getElementById("zone-notifs");
-
-  if (!estInstalleSurEcranAccueil) {
-    // Sur iPhone, les notifs ne marchent que si l'app est installée sur l'écran d'accueil
-    zoneNotifs.style.display = "block";
-    texteZone.textContent = "Installe d'abord ce dashboard sur ton écran d'accueil (Partager → Sur l'écran d'accueil) pour pouvoir activer les notifications.";
-    boutonActiver.style.display = "none";
-    return;
-  }
-
-  const dejaAbonne = await OneSignal.User.PushSubscription.optedIn;
-  if (dejaAbonne) {
-    texteZone.textContent = "Notifications activées ✅";
-    boutonActiver.style.display = "none";
-  } else {
-    zoneNotifs.style.display = "block";
-    boutonActiver.addEventListener("click", async () => {
-      await OneSignal.Notifications.requestPermission();
-      texteZone.textContent = "Notifications activées ✅";
-      boutonActiver.style.display = "none";
+  try {
+    await OneSignal.init({
+      appId: "5fbe501c-8214-4770-a47a-567b251dfa27",
+      allowLocalhostAsSecureOrigin: true,
     });
+
+    const estInstalleSurEcranAccueil = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    if (!estInstalleSurEcranAccueil) {
+      texteZoneNotifs.textContent = "Installe d'abord ce dashboard sur ton écran d'accueil (Partager → Sur l'écran d'accueil), puis reviens ici.";
+      return;
+    }
+
+    const dejaAbonne = await OneSignal.User.PushSubscription.optedIn;
+    if (dejaAbonne) {
+      texteZoneNotifs.textContent = "Notifications activées ✅";
+    } else {
+      texteZoneNotifs.textContent = "Active les notifications pour être prévenu des changements importants.";
+      boutonActiverNotifs.style.display = "inline-block";
+      boutonActiverNotifs.addEventListener("click", async () => {
+        await OneSignal.Notifications.requestPermission();
+        texteZoneNotifs.textContent = "Notifications activées ✅";
+        boutonActiverNotifs.style.display = "none";
+      });
+    }
+  } catch (erreur) {
+    texteZoneNotifs.textContent = "Erreur d'initialisation : " + erreur.message;
+    texteZoneNotifs.className = "erreur";
   }
 });
+
+// Filet de sécurité : si le SDK OneSignal ne se charge pas du tout après 5 secondes
+setTimeout(() => {
+  if (texteZoneNotifs.textContent === "Vérification…") {
+    texteZoneNotifs.textContent = "Le service de notifications n'a pas répondu (SDK non chargé).";
+    texteZoneNotifs.className = "erreur";
+  }
+}, 5000);
 </script>
 </body>
 </html>
