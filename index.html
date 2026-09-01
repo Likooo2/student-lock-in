@@ -357,6 +357,9 @@ OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "5fbe501c-8214-4770-a47a-567b251dfa27",
       allowLocalhostAsSecureOrigin: true,
+      path: "/student-lock-in/",
+      serviceWorkerParam: { scope: "/student-lock-in/" },
+      serviceWorkerPath: "OneSignalSDKWorker.js",
     });
 
     const estInstalleSurEcranAccueil = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
