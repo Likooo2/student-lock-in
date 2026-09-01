@@ -376,9 +376,18 @@ OneSignalDeferred.push(async function(OneSignal) {
       texteZoneNotifs.textContent = "Active les notifications pour être prévenu des changements importants.";
       boutonActiverNotifs.style.display = "inline-block";
       boutonActiverNotifs.addEventListener("click", async () => {
-        await OneSignal.Notifications.requestPermission();
-        texteZoneNotifs.textContent = "Notifications activées ✅";
-        boutonActiverNotifs.style.display = "none";
+        try {
+          await OneSignal.Notifications.requestPermission();
+          await new Promise(r => setTimeout(r, 2500));
+          const id = OneSignal.User.PushSubscription.id;
+          const opted = OneSignal.User.PushSubscription.optedIn;
+          const token = OneSignal.User.PushSubscription.token;
+          texteZoneNotifs.textContent = "Permission: OK | ID: " + (id || "aucun") + " | Actif: " + opted + " | Token: " + (token ? "présent" : "absent");
+          boutonActiverNotifs.style.display = "none";
+        } catch (erreurClic) {
+          texteZoneNotifs.textContent = "Erreur à l'activation : " + erreurClic.message;
+          texteZoneNotifs.className = "erreur";
+        }
       });
     }
   } catch (erreur) {
