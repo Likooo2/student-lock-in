@@ -378,12 +378,24 @@ OneSignalDeferred.push(async function(OneSignal) {
       boutonActiverNotifs.addEventListener("click", async () => {
         try {
           await OneSignal.Notifications.requestPermission();
-          await new Promise(r => setTimeout(r, 2500));
-          const id = OneSignal.User.PushSubscription.id;
-          const opted = OneSignal.User.PushSubscription.optedIn;
-          const token = OneSignal.User.PushSubscription.token;
-          texteZoneNotifs.textContent = "Permission: OK | ID: " + (id || "aucun") + " | Actif: " + opted + " | Token: " + (token ? "présent" : "absent");
-          boutonActiverNotifs.style.display = "none";
+
+          let token = null;
+          let id = null;
+          for (let tentative = 0; tentative < 8; tentative++) {
+            await new Promise(r => setTimeout(r, 2000));
+            token = OneSignal.User.PushSubscription.token;
+            id = OneSignal.User.PushSubscription.id;
+            texteZoneNotifs.textContent = "Attente du jeton… (tentative " + (tentative + 1) + "/8) ID: " + (id || "aucun");
+            if (token) break;
+          }
+
+          if (token) {
+            texteZoneNotifs.textContent = "Notifications activées ✅ (ID: " + id + ")";
+            boutonActiverNotifs.style.display = "none";
+          } else {
+            texteZoneNotifs.textContent = "Permission accordée mais jeton jamais reçu après 16s. ID: " + (id || "aucun");
+            texteZoneNotifs.className = "erreur";
+          }
         } catch (erreurClic) {
           texteZoneNotifs.textContent = "Erreur à l'activation : " + erreurClic.message;
           texteZoneNotifs.className = "erreur";
