@@ -13,7 +13,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <style>
   :root{
     --paper:#FAF6EF;
@@ -44,97 +43,49 @@
     max-width:480px; margin:0 auto;
     padding:32px 20px 20px;
   }
-  header{
-    margin-bottom:28px;
-  }
+  header{ margin-bottom:28px; }
   .eyebrow-jour{
     font-size:14px; color:var(--ink-soft); font-weight:500;
-    text-transform:capitalize;
-    margin-bottom:2px;
+    text-transform:capitalize; margin-bottom:2px;
   }
   h1.date-principale{
-    font-family:'Fraunces',serif;
-    font-weight:600;
-    font-size:34px;
-    line-height:1.08;
-    margin:0;
-    letter-spacing:-.01em;
+    font-family:'Fraunces',serif; font-weight:600; font-size:34px;
+    line-height:1.08; margin:0; letter-spacing:-.01em;
   }
-  section{
-    margin-top:30px;
-    padding-top:20px;
-    border-top:1px solid var(--card-edge);
-  }
+  section{ margin-top:30px; padding-top:20px; border-top:1px solid var(--card-edge); }
   section h2{
-    font-family:'Fraunces',serif;
-    font-weight:500;
-    font-size:19px;
-    margin:0 0 14px;
-    display:flex;
-    align-items:baseline;
-    gap:8px;
+    font-family:'Fraunces',serif; font-weight:500; font-size:19px;
+    margin:0 0 14px; display:flex; align-items:baseline; gap:8px;
   }
-  .badge-compte{
-    font-family:'Inter',sans-serif;
-    font-size:13px;
-    color:var(--ink-soft);
-    font-weight:500;
-  }
-
-  /* Cours */
-  .ligne-cours{
-    display:flex; gap:14px; padding:10px 0;
-    border-bottom:1px solid var(--card-edge);
-  }
-  .ligne-cours:last-child{border-bottom:none;}
+  .ligne-cours{ display:flex; gap:14px; padding:10px 0; border-bottom:1px solid var(--card-edge); }
+  .ligne-cours:last-child{ border-bottom:none; }
   .heure-cours{
-    font-variant-numeric:tabular-nums;
-    font-weight:600; font-size:14px;
-    color:var(--navy);
-    min-width:44px; flex-shrink:0; padding-top:1px;
+    font-variant-numeric:tabular-nums; font-weight:600; font-size:14px;
+    color:var(--navy); min-width:44px; flex-shrink:0; padding-top:1px;
   }
-  .detail-cours .titre-cours{font-size:15px; font-weight:500; line-height:1.35;}
-  .detail-cours .lieu-cours{font-size:13px; color:var(--ink-soft); margin-top:2px;}
-
-  /* Devoirs */
+  .detail-cours .titre-cours{ font-size:15px; font-weight:500; line-height:1.35; }
+  .detail-cours .lieu-cours{ font-size:13px; color:var(--ink-soft); margin-top:2px; }
   .ligne-devoir{
     display:flex; justify-content:space-between; align-items:flex-start;
-    gap:12px; padding:11px 0;
-    border-bottom:1px solid var(--card-edge);
+    gap:12px; padding:11px 0; border-bottom:1px solid var(--card-edge);
   }
-  .ligne-devoir:last-child{border-bottom:none;}
-  .devoir-texte .devoir-titre{font-size:15px; font-weight:500;}
-  .devoir-texte .devoir-matiere{font-size:13px; color:var(--ink-soft); margin-top:1px;}
+  .ligne-devoir:last-child{ border-bottom:none; }
+  .devoir-texte .devoir-titre{ font-size:15px; font-weight:500; }
+  .devoir-texte .devoir-matiere{ font-size:13px; color:var(--ink-soft); margin-top:1px; }
   .devoir-deadline{
     font-size:13px; font-weight:600; white-space:nowrap;
     color:var(--ink-soft); text-align:right; padding-top:1px;
   }
-  .devoir-deadline.urgent{color:var(--amber);}
-
-  /* Sommeil / sport : lignes clé-valeur */
-  .stat-ligne{
-    display:flex; justify-content:space-between; align-items:baseline;
-    padding:9px 0;
-    font-size:15px;
-  }
-  .stat-ligne .cle{color:var(--ink-soft);}
-  .stat-ligne .val{font-weight:600; text-align:right;}
-  .stat-detail{
-    font-size:13px; color:var(--ink-soft); margin-top:2px; line-height:1.5;
-  }
-  .statut-ok{color:var(--sage);}
-  .statut-attention{color:var(--amber);}
-  .variation-hausse{color:var(--sage);}
-  .variation-baisse{color:#B4573F;}
-
-  .vide{
-    font-size:14px; color:var(--ink-soft); font-style:italic; padding:6px 0;
-  }
-  .chargement, .erreur{
-    font-size:14px; color:var(--ink-soft); padding:6px 0;
-  }
-  .erreur{color:var(--amber);}
-
+  .devoir-deadline.urgent{ color:var(--amber); }
+  .stat-ligne{ display:flex; justify-content:space-between; align-items:baseline; padding:9px 0; font-size:15px; }
+  .stat-ligne .cle{ color:var(--ink-soft); }
+  .stat-ligne .val{ font-weight:600; text-align:right; }
+  .stat-detail{ font-size:13px; color:var(--ink-soft); margin-top:2px; line-height:1.5; }
+  .statut-ok{ color:var(--sage); }
+  .statut-attention{ color:var(--amber); }
+  .vide{ font-size:14px; color:var(--ink-soft); font-style:italic; padding:6px 0; }
+  .chargement, .erreur{ font-size:14px; color:var(--ink-soft); padding:6px 0; }
+  .erreur{ color:var(--amber); }
   footer{
     max-width:480px; margin:36px auto 0; padding:0 20px;
     font-size:12px; color:var(--ink-soft);
@@ -145,7 +96,7 @@
     padding:6px 14px; font-size:12px; color:var(--ink-soft);
     font-family:'Inter',sans-serif; cursor:pointer;
   }
-  .bouton-rafraichir:active{background:var(--card-edge);}
+  .bouton-rafraichir:active{ background:var(--card-edge); }
 </style>
 </head>
 <body>
@@ -176,17 +127,6 @@
     <div id="zone-sport" class="chargement">Chargement…</div>
   </section>
 
-  <section id="section-notifs">
-    <h2>Notifications</h2>
-    <div id="zone-notifs" class="chargement">Vérification…</div>
-    <button class="bouton-rafraichir" id="bouton-activer-notifs" style="margin-top:10px; display:none;">Activer les notifications</button>
-  </section>
-
-  <section>
-    <h2>Marchés</h2>
-    <div id="zone-marches" class="chargement">Chargement…</div>
-  </section>
-
   <footer>
     <span id="derniere-maj">—</span>
     <button class="bouton-rafraichir" onclick="chargerDonnees()">Actualiser</button>
@@ -206,7 +146,6 @@ function afficherDate(){
 }
 
 function estUrgent(deadlineStr){
-  // deadlineStr au format dd/MM/yyyy
   const [j, m, a] = deadlineStr.split("/").map(Number);
   const deadline = new Date(a, m - 1, j);
   const dansJours = (deadline - new Date()) / (1000 * 60 * 60 * 24);
@@ -282,44 +221,6 @@ function rendreSport(dashboard){
   `;
 }
 
-function formaterVariation(pourcentage){
-  const signe = pourcentage >= 0 ? "+" : "";
-  const classe = pourcentage >= 0 ? "variation-hausse" : "variation-baisse";
-  return `<span class="${classe}">${signe}${pourcentage.toFixed(2)}%</span>`;
-}
-
-async function chargerMarches(data){
-  const zone = document.getElementById("zone-marches");
-  let ligneBitcoin = "";
-  let ligneDcam = "";
-
-  try {
-    const reponseBtc = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur&include_24hr_change=true");
-    const dataBtc = await reponseBtc.json();
-    const prixBtc = dataBtc.bitcoin.eur;
-    const variationBtc = dataBtc.bitcoin.eur_24h_change;
-    ligneBitcoin = `
-      <div class="stat-ligne">
-        <span class="cle">Bitcoin</span>
-        <span class="val">${prixBtc.toLocaleString('fr-FR', {maximumFractionDigits:0})} € ${formaterVariation(variationBtc)}</span>
-      </div>`;
-  } catch (e) {
-    ligneBitcoin = '<div class="stat-ligne"><span class="cle">Bitcoin</span><span class="val erreur">indisponible</span></div>';
-  }
-
-  if (data && data.dcam) {
-    ligneDcam = `
-      <div class="stat-ligne">
-        <span class="cle">DCAM (Amundi PEA Monde)</span>
-        <span class="val">${data.dcam.prix.toFixed(2)} € ${formaterVariation(data.dcam.variation)}</span>
-      </div>`;
-  } else {
-    ligneDcam = '<div class="stat-ligne"><span class="cle">DCAM (Amundi PEA Monde)</span><span class="val erreur">indisponible</span></div>';
-  }
-
-  zone.innerHTML = ligneBitcoin + ligneDcam;
-}
-
 async function chargerDonnees(){
   try {
     const reponse = await fetch(URL_WEB_APP);
@@ -330,7 +231,6 @@ async function chargerDonnees(){
     rendreDevoirs(data.devoirs);
     rendreSommeil(data.dashboard || {});
     rendreSport(data.dashboard || {});
-    chargerMarches(data);
 
     const maintenant = new Date();
     document.getElementById("derniere-maj").textContent =
@@ -346,75 +246,6 @@ async function chargerDonnees(){
 
 afficherDate();
 chargerDonnees();
-
-// --- Notifications push (OneSignal) ---
-const texteZoneNotifs = document.getElementById("zone-notifs");
-const boutonActiverNotifs = document.getElementById("bouton-activer-notifs");
-
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-OneSignalDeferred.push(async function(OneSignal) {
-  try {
-    await OneSignal.init({
-      appId: "5fbe501c-8214-4770-a47a-567b251dfa27",
-      allowLocalhostAsSecureOrigin: true,
-      path: "/student-lock-in/",
-      serviceWorkerParam: { scope: "/student-lock-in/" },
-      serviceWorkerPath: "OneSignalSDKWorker.js",
-    });
-
-    const estInstalleSurEcranAccueil = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
-    if (!estInstalleSurEcranAccueil) {
-      texteZoneNotifs.textContent = "Installe d'abord ce dashboard sur ton écran d'accueil (Partager → Sur l'écran d'accueil), puis reviens ici.";
-      return;
-    }
-
-    const dejaAbonne = await OneSignal.User.PushSubscription.optedIn;
-    if (dejaAbonne) {
-      texteZoneNotifs.textContent = "Notifications activées ✅";
-    } else {
-      texteZoneNotifs.textContent = "Active les notifications pour être prévenu des changements importants.";
-      boutonActiverNotifs.style.display = "inline-block";
-      boutonActiverNotifs.addEventListener("click", async () => {
-        try {
-          await OneSignal.Notifications.requestPermission();
-
-          let token = null;
-          let id = null;
-          for (let tentative = 0; tentative < 8; tentative++) {
-            await new Promise(r => setTimeout(r, 2000));
-            token = OneSignal.User.PushSubscription.token;
-            id = OneSignal.User.PushSubscription.id;
-            texteZoneNotifs.textContent = "Attente du jeton… (tentative " + (tentative + 1) + "/8) ID: " + (id || "aucun");
-            if (token) break;
-          }
-
-          if (token) {
-            texteZoneNotifs.textContent = "Notifications activées ✅ (ID: " + id + ")";
-            boutonActiverNotifs.style.display = "none";
-          } else {
-            texteZoneNotifs.textContent = "Permission accordée mais jeton jamais reçu après 16s. ID: " + (id || "aucun");
-            texteZoneNotifs.className = "erreur";
-          }
-        } catch (erreurClic) {
-          texteZoneNotifs.textContent = "Erreur à l'activation : " + erreurClic.message;
-          texteZoneNotifs.className = "erreur";
-        }
-      });
-    }
-  } catch (erreur) {
-    texteZoneNotifs.textContent = "Erreur d'initialisation : " + erreur.message;
-    texteZoneNotifs.className = "erreur";
-  }
-});
-
-// Filet de sécurité : si le SDK OneSignal ne se charge pas du tout après 5 secondes
-setTimeout(() => {
-  if (texteZoneNotifs.textContent === "Vérification…") {
-    texteZoneNotifs.textContent = "Le service de notifications n'a pas répondu (SDK non chargé).";
-    texteZoneNotifs.className = "erreur";
-  }
-}, 5000);
 </script>
 </body>
 </html>
