@@ -86,6 +86,15 @@
   .vide{ font-size:14px; color:var(--ink-soft); font-style:italic; padding:6px 0; }
   .chargement, .erreur{ font-size:14px; color:var(--ink-soft); padding:6px 0; }
   .erreur{ color:var(--amber); }
+  .ligne-mail{
+    padding:10px 0; border-bottom:1px solid var(--card-edge);
+  }
+  .ligne-mail:last-child{ border-bottom:none; }
+  .mail-entete{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .mail-expediteur{ font-size:15px; font-weight:500; }
+  .mail-badge{ font-size:12px; color:var(--ink-soft); white-space:nowrap; }
+  .mail-badge.action{ color:var(--amber); font-weight:600; }
+  .mail-resume{ font-size:13px; color:var(--ink-soft); margin-top:2px; line-height:1.4; }
   footer{
     max-width:480px; margin:36px auto 0; padding:0 20px;
     font-size:12px; color:var(--ink-soft);
@@ -125,6 +134,12 @@
   <section>
     <h2>Sport</h2>
     <div id="zone-sport" class="chargement">Chargement…</div>
+  </section>
+
+  <section>
+    <h2>Mails</h2>
+    <div id="zone-mails" class="chargement">Chargement…</div>
+    <button class="bouton-rafraichir" id="bouton-marquer-lu" style="margin-top:10px; display:none;">Tout marquer comme lu</button>
   </section>
 
   <footer>
@@ -221,6 +236,50 @@ function rendreSport(dashboard){
   `;
 }
 
+const EMOJIS_CATEGORIE = {
+  urgent: "🔴", a_traiter: "🟠", etudiant: "🔵",
+  pro: "💼", personnel: "🟢", newsletter: "⚪"
+};
+
+function rendreMails(mails){
+  const zone = document.getElementById("zone-mails");
+  const bouton = document.getElementById("bouton-marquer-lu");
+
+  if (!mails || mails.length === 0){
+    zone.innerHTML = '<div class="vide">Rien à lire pour l\'instant.</div>';
+    bouton.style.display = "none";
+    return;
+  }
+
+  zone.innerHTML = mails.map(m => {
+    const emoji = EMOJIS_CATEGORIE[m.categorie] || "⚪";
+    return `
+    <div class="ligne-mail">
+      <div class="mail-entete">
+        <div class="mail-expediteur">${emoji} ${m.expediteur}</div>
+        <div class="mail-badge ${m.actionRequise ? 'action' : ''}">${m.actionRequise ? '⚠️ Action' : m.origine}</div>
+      </div>
+      <div class="mail-resume">${m.resume}</div>
+    </div>
+  `;
+  }).join("");
+
+  bouton.style.display = "inline-block";
+}
+
+document.getElementById("bouton-marquer-lu").addEventListener("click", async () => {
+  const bouton = document.getElementById("bouton-marquer-lu");
+  bouton.disabled = true;
+  bouton.textContent = "…";
+  try {
+    await fetch(URL_WEB_APP + "?action=marquerLu");
+    rendreMails([]);
+  } catch (erreur) {
+    bouton.disabled = false;
+    bouton.textContent = "Tout marquer comme lu";
+  }
+});
+
 async function chargerDonnees(){
   try {
     const reponse = await fetch(URL_WEB_APP);
@@ -231,6 +290,7 @@ async function chargerDonnees(){
     rendreDevoirs(data.devoirs);
     rendreSommeil(data.dashboard || {});
     rendreSport(data.dashboard || {});
+    rendreMails(data.mailsAnalyses);
 
     const maintenant = new Date();
     document.getElementById("derniere-maj").textContent =
